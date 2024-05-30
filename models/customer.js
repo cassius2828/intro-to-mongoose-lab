@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const COLLECTION_NAME = process.env.COLLECTION_NAME;
 
 const customerSchema = new mongoose.Schema({
   name: String,
