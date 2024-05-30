@@ -40,7 +40,7 @@ function displayPrompts() {
   selectUserAction(userInputValue);
 }
 
-function selectUserAction(value) {
+async function selectUserAction(value) {
   switch (value) {
     case "1":
       return createCustomerPrompt();
@@ -52,6 +52,7 @@ function selectUserAction(value) {
       return deleteCustomerPrompt();
     case "5":
       console.log("Quitting...");
+      await mongoose.disconnect();
       return process.exit();
     default:
       console.log("Invalid choice. Please try again.");
@@ -106,8 +107,7 @@ async function createCustomerPrompt() {
   await createNewCustomer(name, age);
   await quitOrSelectAnotherPrompt();
 }
-// VIEW ALL CUSTOMERS
-async function viewAllCustomersPrompt() {}
+
 // UPDATE CUSTOMER
 async function updateCustomerPrompt() {
   console.log("Below is a list of customers:\n");
@@ -144,7 +144,24 @@ async function updateCustomerPrompt() {
 }
 // DELETE CUSTOMER
 async function deleteCustomerPrompt() {
+  console.log("Below is a list of customers:\n");
+
+  const customerListByID = await CustomerModel.find({});
+  customerListByID.map((customer) => {
+    return console.log(`
+    id: ${customer._id} \n
+    Name: ${customer.name}\n
+    Age: ${customer.age}
+    `);
+  });
+
+  console.log(
+    "Copy and paste the id of the customer you would like to delete here: \n"
+  );
+  const selectedCustomerID = prompt();
+  const customerToDelete = await CustomerModel.findByIdAndDelete(
+    selectedCustomerID
+  );
+  console.log(`You have now deleted this user: `, customerToDelete);
   await quitOrSelectAnotherPrompt();
 }
-// QUIT
-async function quit() {}
